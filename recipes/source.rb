@@ -40,17 +40,26 @@ remote_file source_file do
   not_if { File.exist?(source_file) }
 end
 
-# Extract and install the sourcdee
-if version.nil?
-  install_check = "which convert"
+# Build the configure options and binary paths
+configure_options = node['imagemagick']['configure_options'].dup
+if node['imagemagick']['bindir']
+  configure_options << "--bindir=#{node['imagemagick']['bindir']}"
+  convert = "#{node['imagemagick']['bindir']}/convert"
 else
-  install_check = "convert --version | grep #{version}"
+  convert = "convert"
+end
+
+# Extract and install the source
+if version.nil?
+  install_check = "which #{convert}"
+else
+  install_check = "#{convert} --version | grep #{version}"
 end
 execute "Install ImageMagick" do
   cwd Chef::Config['file_cache_path']
   command <<-COMMAND
     tar -xzf #{source_file}
-    cd #{source_dir}
+    cd #{source_dir} #{node['imagemagick']['configure_options'].join(" ")}
     ./configure
     make
     make install
