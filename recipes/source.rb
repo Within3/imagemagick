@@ -42,12 +42,9 @@ end
 
 # Build the configure options and binary paths
 configure_options = node['imagemagick']['configure_options'].dup
-if node['imagemagick']['bindir']
-  configure_options << "--bindir=#{node['imagemagick']['bindir']}"
-  convert = "#{node['imagemagick']['bindir']}/convert"
-else
-  convert = "convert"
-end
+configure_options << "--prefix=#{node['imagemagick']['prefix']}"
+configure_options << "--bindir=#{node['imagemagick']['bindir']}"
+convert = "#{node['imagemagick']['bindir']}/convert"
 
 # Extract and install the source
 if version.nil?
@@ -59,7 +56,7 @@ execute "Install ImageMagick" do
   cwd Chef::Config['file_cache_path']
   command <<-COMMAND
     tar -xzf #{source_file}
-    cd #{source_dir} #{node['imagemagick']['configure_options'].join(" ")}
+    cd #{source_dir} #{node['imagemagick']['configure_options'].uniq.join(" ")}
     ./configure
     make
     make install
