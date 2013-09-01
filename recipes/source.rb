@@ -42,12 +42,10 @@ end
 
 # Build the configure options and binary paths
 configure_options = node['imagemagick']['configure_options'].dup
-if node['imagemagick']['bindir']
-  configure_options << "--bindir=#{node['imagemagick']['bindir']}"
-  convert = "#{node['imagemagick']['bindir']}/convert"
-else
-  convert = "convert"
-end
+configure_options << "--prefix=#{node['imagemagick']['prefix']}"
+configure_options << "--bindir=#{node['imagemagick']['bindir']}"
+configure_options << "--libdir=#{node['imagemagick']['libdir']}"
+convert = "#{node['imagemagick']['bindir']}/convert"
 
 # Extract and install the source
 if version.nil?
@@ -59,10 +57,24 @@ execute "Install ImageMagick" do
   cwd Chef::Config['file_cache_path']
   command <<-COMMAND
     tar -xzf #{source_file}
-    cd #{source_dir} #{node['imagemagick']['configure_options'].join(" ")}
+    cd #{source_dir} #{node['imagemagick']['configure_options'].uniq.join(" ")}
     ./configure
     make
     make install
   COMMAND
   not_if install_check
+end
+
+# Add imagemagick's library directory to the library search directories
+template "/etc/ld.so.conf.d/imagemagick.conf" do
+  source "imagemagick.conf.erb"
+  mode "0644"
+  variables "library_path" => node['imagemagick']['libdir'] || "/usr/local/lib"
+  notifies :run, "execute[Update ImageMagick libraries]", :immediately
+end
+
+# Run ldconfig to update the ImageMagick libraries
+execute "Update ImageMagick libraries" do
+  command "ldconfig"
+  action :nothing
 end
