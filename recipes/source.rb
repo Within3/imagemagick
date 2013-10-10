@@ -10,7 +10,7 @@ end
 dev_packages = value_for_platform(
   ["centos", "redhat"] => {
     "default" => %w{freetype-devel ghostscript-devel libwmf-devel jasper-devel
-      lcms-devel bzip2-devel librsvg2 librsvg2-devel libtool-ltdl-devel autotrace-devel}}
+      lcms-devel bzip2-devel librsvg2 librsvg2-devel libtool-ltdl-devel}}
 )
 dev_packages.each do |pkg|
   package pkg do
