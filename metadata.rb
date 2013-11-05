@@ -9,9 +9,11 @@ version          "0.2.2"
 depends "build-essential"
 depends "yum"
 
-recipe "imagemagick", "Installs imagemagick package"
+recipe "imagemagick", "Installs imagemagick using the requested instalation method"
 recipe "imagemagick::devel", "Installs imagemagick development libraries"
+recipe "imagemagick::package", "Installs imagemagick from a package"
 recipe "imagemagick::rmagick", "Installs rmagick gem"
+recipe "imagemagick::source", "Installs imagemagick from source"
 
 %w{fedora centos rhel ubuntu debian}.each do |os|
   supports os
