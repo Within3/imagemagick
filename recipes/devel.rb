@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: imagemagick
-# Recipe:: default
+# Recipe:: devel
 #
 # Copyright 2009, Opscode, Inc.
 #
