@@ -7,7 +7,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.2.3"
 
 depends "build-essential"
-depends "yum"
+depends "yum-repoforge", "~> 0.1"
 
 recipe "imagemagick", "Installs imagemagick using the requested instalation method"
 recipe "imagemagick::devel", "Installs imagemagick development libraries"

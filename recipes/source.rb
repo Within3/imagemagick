@@ -22,7 +22,7 @@ include_recipe "build-essential"
 # Add repositories for older platforms
 case node.platform
 when "centos", "redhat"
-  include_recipe "yum::repoforge"
+  include_recipe "yum-repoforge"
 end
 
 # Install required development packages
