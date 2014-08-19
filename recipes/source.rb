@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+::Chef::Recipe.send(:include, ::Imagemagick::Source)
+
 include_recipe "build-essential"
 
 # Add repositories for older platforms
@@ -39,23 +41,16 @@ end
 
 # Build the name of the source archive
 version = node['imagemagick']['version']
-name_parts = ["ImageMagick"]
-if not version.nil?
-  name_parts << version
-  if not version.end_with?(/-\d+/)
-    name_parts << "10"
-  end
-end
-base_name = name_parts.join("-")
+source_url = imagemagick_source_url(version)
+source_archive = imagemagick_source_archive(version)
 
 # Determine file paths
-source_dir = "#{Chef::Config['file_cache_path']}/#{base_name}"
+source_dir = "#{Chef::Config['file_cache_path']}/#{source_archive}"
 source_file = "#{source_dir}.tar.gz"
-remote_source_dir = version.nil? ? "" : "/legacy"
 
 # Download the source
 remote_file source_file do
-  source "#{node['imagemagick']['base_url']}#{remote_source_dir}/#{base_name}.tar.gz"
+  source source_url
   not_if { File.exist?(source_file) }
 end
 
