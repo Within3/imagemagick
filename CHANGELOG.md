@@ -1,3 +1,7 @@
+## v0.2.5:
+
+* Fix 404 errors when trying to download legacy source archives
+
 ## v0.2.4:
 
 * Replace `yum` with `yum-repoforge`
